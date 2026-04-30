@@ -1,33 +1,14 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 
 # Distribution / packaging
-build/
 dist/
+build/
 *.egg-info/
-.eggs/
-*.egg
-
-# Virtual environments
-.venv/
-venv/
-ENV/
-env/
-pip-wheel-metadata/
-
-# PyPI config (do not commit your real credentials)
-.pypirc
-
-# Editor directories and files
-.vscode/
-*.swp
-*.swo
-.DS_Store
-
-# Environment files and secrets
-.env
-*.pem
-*.key
-.venv/
