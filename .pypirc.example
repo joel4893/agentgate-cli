@@ -1,0 +1,14 @@
+[distutils]
+index-servers =
+    pypi
+
+[pypi]
+# Use username `__token__` and your API token as the password.
+username = __token__
+password = <YOUR_PYPI_API_TOKEN>
+
+# Example for TestPyPI (if you publish to test):
+# [testpypi]
+# repository: https://test.pypi.org/legacy/
+# username = __token__
+# password = <YOUR_TESTPYPI_TOKEN>
