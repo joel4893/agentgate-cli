@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentify-joel"
+version = "0.1.0"
+authors = [
+  { name="Joel", email="joel@example.com" },
+]
+description = "A Python project for agentify"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+classifiers = [
+    "Programming Language :: Python :: 3",
+]

@@ -1,0 +1,7 @@
+LICENSE
+README.md
+pyproject.toml
+agentify_joel.egg-info/PKG-INFO
+agentify_joel.egg-info/SOURCES.txt
+agentify_joel.egg-info/dependency_links.txt
+agentify_joel.egg-info/top_level.txt
