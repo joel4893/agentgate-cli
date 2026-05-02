@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  agentgate:
+    build: .
+    container_name: agentgate
+    ports:
+      - "8000:8000"
+    environment:
+      - TRACE_API_KEYS=ag_live_demo_key_123,ag_live_default1234567890
+      - PORT=8000
+      - DEMO_FETCH_MCP_URL=http://flaky-mcp:9000/mcp
+      - DEMO_GITHUB_MCP_URL=http://mock-github-mcp:9001/mcp
+      - RETRY_MAX=6
+    volumes:
+      - ./logs:/app/logs
+      - ./trace.db:/app/trace.db
+    depends_on:
+      - flaky-mcp
+      - mock-github-mcp
+
+  flaky-mcp:
+    build: .
+    container_name: flaky-mcp
+    command: python demo/flaky_mcp.py
+    ports:
+      - "9000:9000"
+    environment:
+      - FLAKY_MCP_PORT=9000
+      - FLAKY_FAIL_FIRST_N=4
+      - HOST=0.0.0.0
+
+  mock-github-mcp:
+    build: .
+    container_name: mock-github-mcp
+    command: python demo/mock_github_mcp.py
+    ports:
+      - "9001:9001"
+    environment:
+      - MOCK_GITHUB_MCP_PORT=9001
+      - HOST=0.0.0.0
