@@ -1,8 +1,23 @@
 # AgentGate
 
-Run one command. Watch an agent fail, recover, and complete the action.
+Run one command. Watch your agent fail... and still succeed.
 
-AgentGate is the execution layer between AI agents and real tools. This repo is the local TypeScript demo: it shows retries, approvals, state revalidation, and traces without making you wire up a full app first.
+```bash
+npx agentgate demo
+```
+
+Most agents break in production because:
+
+- APIs fail
+- retries loop
+- state changes mid-execution
+
+AgentGate sits between your agent and tools and handles it.
+
+Agents are good at reasoning.
+They are bad at execution.
+
+AgentGate fixes execution.
 
 ## Get Started
 
