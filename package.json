@@ -1,0 +1,42 @@
+{
+  "name": "@agentgate/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Gate CLI for AgentGate: turn APIs into agent-ready tools in minutes.",
+  "type": "commonjs",
+  "main": "./dist/sdk.js",
+  "types": "./dist/sdk.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/sdk.d.ts",
+      "default": "./dist/sdk.js"
+    },
+    "./cli": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "gate": "./dist/index.js",
+    "agentgate": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "npm run build && node dist/index.js dev",
+    "demo": "npm run build && node dist/index.js demo",
+    "doctor": "npm run build && node dist/index.js doctor",
+    "down": "npm run build && node dist/index.js down"
+  },
+  "keywords": [
+    "agents",
+    "mcp",
+    "cli",
+    "agentgate",
+    "gate"
+  ],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "typescript": "^5.4.5"
+  }
+}
