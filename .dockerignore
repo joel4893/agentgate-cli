@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.git/
+logs/
+trace.db
+*.tgz
+__pycache__/
+.pytest_cache/
+.DS_Store

@@ -6,6 +6,7 @@ import { setTimeout as delay } from "node:timers/promises";
 
 const API_KEY = "ag_live_demo_key_123";
 const BASE_URL = process.env.AGENTGATE_BASE_URL ?? "http://localhost:8000";
+const PACKAGE_ROOT = path.resolve(__dirname, "..");
 
 type CommandResult = {
   code: number | null;
@@ -13,19 +14,18 @@ type CommandResult = {
 
 function printHelp(): void {
   console.log(`
-Gate CLI
+AgentGate CLI
 
 Usage:
-  gate demo      Start the local AgentGate stack and run the guided demo
-  gate dev       Start the local AgentGate stack in the foreground
-  gate down      Stop the local Docker demo stack
-  gate doctor    Check local prerequisites
-  gate help      Show this help
+  agentgate demo      Start the local AgentGate stack and run the guided demo
+  agentgate dev       Start the local AgentGate stack in the foreground
+  agentgate down      Stop the local Docker demo stack
+  agentgate doctor    Check local prerequisites
+  agentgate help      Show this help
 
 Examples:
-  npm run build
-  npm exec -- gate demo
-  npm exec -- gate dev
+  npx agentgate demo
+  npx agentgate down
 `);
 }
 
@@ -34,12 +34,17 @@ function commandExists(command: string): boolean {
   return result.status === 0;
 }
 
-function run(command: string, args: string[], options: { detached?: boolean } = {}): Promise<CommandResult> {
+function run(
+  command: string,
+  args: string[],
+  options: { detached?: boolean; cwd?: string } = {},
+): Promise<CommandResult> {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       stdio: "inherit",
       shell: process.platform === "win32",
       detached: options.detached ?? false,
+      cwd: options.cwd,
     });
 
     child.on("error", reject);
@@ -91,23 +96,23 @@ async function doctor(): Promise<number> {
 
   const failed = checks.filter(([, ok]) => !ok);
   if (failed.length) {
-    console.log("\nInstall the missing tools, then run `gate demo` again.");
+    console.log("\nInstall the missing tools, then run `npx agentgate demo` again.");
     return 1;
   }
 
-  console.log("\nAll set. Run `gate demo`.");
+  console.log("\nAll set. Running the demo now.");
   return 0;
 }
 
 async function dev(): Promise<number> {
   console.log("Starting AgentGate demo stack in the foreground...\n");
-  const result = await run("docker", ["compose", "up", "--build"]);
+  const result = await run("docker", ["compose", "up", "--build"], { cwd: PACKAGE_ROOT });
   return result.code ?? 1;
 }
 
 async function down(): Promise<number> {
   console.log("Stopping AgentGate demo stack...\n");
-  const result = await run("docker", ["compose", "down"]);
+  const result = await run("docker", ["compose", "down", "--remove-orphans"], { cwd: PACKAGE_ROOT });
   return result.code ?? 1;
 }
 
@@ -118,7 +123,8 @@ async function demo(): Promise<number> {
   }
 
   console.log("\nStarting AgentGate demo stack in the background...\n");
-  const up = await run("docker", ["compose", "up", "--build", "-d"]);
+  await run("docker", ["compose", "down", "--remove-orphans"], { cwd: PACKAGE_ROOT });
+  const up = await run("docker", ["compose", "up", "--build", "-d"], { cwd: PACKAGE_ROOT });
   if (up.code !== 0) {
     return up.code ?? 1;
   }
@@ -128,11 +134,11 @@ async function demo(): Promise<number> {
 
   console.log("\nRunning guided demo...\n");
   const demoPath = path.join(__dirname, "demo.js");
-  const result = await run(process.execPath, [demoPath]);
+  const result = await run(process.execPath, [demoPath], { cwd: PACKAGE_ROOT });
 
   console.log(`\nApproval dashboard: ${BASE_URL}/dashboard/approvals?api_key=${API_KEY}`);
   console.log(`Traces: ${BASE_URL}/traces`);
-  console.log("\nStop the stack with: gate down");
+  console.log("\nStop the stack with: npx agentgate down");
 
   return result.code ?? 1;
 }

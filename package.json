@@ -1,7 +1,6 @@
 {
-  "name": "@agentgate/cli",
-  "version": "0.1.0",
-  "private": true,
+  "name": "agentgate",
+  "version": "0.17.0",
   "description": "Gate CLI for AgentGate: turn APIs into agent-ready tools in minutes.",
   "type": "commonjs",
   "main": "./dist/sdk.js",
@@ -25,8 +24,20 @@
     "dev": "npm run build && node dist/index.js dev",
     "demo": "npm run build && node dist/index.js demo",
     "doctor": "npm run build && node dist/index.js doctor",
-    "down": "npm run build && node dist/index.js down"
+    "down": "npm run build && node dist/index.js down",
+    "prepack": "npm run build"
   },
+  "files": [
+    "dist",
+    "demo",
+    "Dockerfile",
+    "docker-compose.yml",
+    "main.py",
+    "registry.py",
+    "requirements.txt",
+    "sdk.py",
+    "README.md"
+  ],
   "keywords": [
     "agents",
     "mcp",
@@ -34,7 +45,7 @@
     "agentgate",
     "gate"
   ],
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@types/node": "^20.12.12",
     "typescript": "^5.4.5"

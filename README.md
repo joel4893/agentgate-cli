@@ -22,29 +22,22 @@ AgentGate fixes execution.
 ## Get Started
 
 ```bash
-git clone https://github.com/joel4893/agentgate-cli.git
-cd agentgate-cli
-npm install
-npm run demo
+npx agentgate demo
 ```
 
 That is it.
 
 The demo starts a local AgentGate gateway, runs mock tools, and shows:
 
-1. Agent calls tool.
-2. Tool fails.
+1. Agent checks a Vercel deployment.
+2. The Vercel read fails once.
 3. AgentGate retries and recovers.
-4. Risky action pauses for approval.
-5. State changes before approval.
-6. AgentGate revalidates before execution.
-7. Every tool call is traced.
-
-Once the package is published, this should become:
-
-```bash
-npx agentgate demo
-```
+4. Agent creates a Linear follow-up issue.
+5. Agent prepares a Slack release update.
+6. Slack posting pauses for approval.
+7. AgentGate revalidates live deployment state before execution.
+8. A stale Slack update gets requeued instead of blindly posting.
+9. Every tool call is traced.
 
 ## What To Notice
 
@@ -77,7 +70,7 @@ agentgate deploy
 ## TypeScript SDK
 
 ```ts
-import { AgentGate } from "@agentgate/cli";
+import { AgentGate } from "agentgate";
 
 const gate = new AgentGate({
   apiKey: "ag_live_demo_key_123",
@@ -85,16 +78,21 @@ const gate = new AgentGate({
 });
 
 const result = await gate.call({
-  tool: "fetch.url",
-  params: { url: "https://agentgate.dev" },
-  agentId: "research_agent",
-  context: { env: "dev", workflowId: "demo" },
+  tool: "vercel.deployment_status",
+  params: {
+    project_id: "agentgate-web",
+    deployment_id: "dep_demo_123",
+  },
+  agentId: "release_agent",
+  context: { env: "prod", workflowId: "release_coordination" },
 });
 ```
 
 ## CLI Commands
 
 ```bash
+npx agentgate demo # start the local stack and run the guided demo
+
 npm run demo      # build CLI, start stack, run the guided demo
 npm run dev       # build CLI and start the stack in the foreground
 npm run down      # stop the local stack
@@ -105,7 +103,7 @@ If you want to call the local binary directly:
 
 ```bash
 npm run build
-npm exec -- gate demo
+npm exec -- agentgate demo
 ```
 
 ## Useful URLs
@@ -133,7 +131,7 @@ curl http://localhost:8000/tools \
 ## Core Call Shape
 
 ```ts
-import { AgentGate } from "@agentgate/cli";
+import { AgentGate } from "agentgate";
 
 const gate = new AgentGate({
   apiKey: "ag_live_demo_key_123",
@@ -141,14 +139,14 @@ const gate = new AgentGate({
 });
 
 const result = await gate.call({
-  tool: "github.create_issue",
+  tool: "linear.create_issue",
   params: {
-    repo: "acme/app",
-    title: "Fix login callback race",
-    body: "Found by an agent",
+    team_id: "ENG",
+    title: "Verify release automation after deployment",
+    description: "Found by an agent",
   },
-  agentId: "dev_agent",
-  context: { env: "prod", workflowId: "issue_triage" },
+  agentId: "release_agent",
+  context: { env: "prod", workflowId: "release_coordination" },
 });
 ```
 
@@ -176,9 +174,10 @@ python3 demo.py
 
 Expected story:
 
-- Act 1: AgentGate handles flaky tool retries.
-- Act 2: AgentGate pauses a risky GitHub issue creation.
-- Act 3: AgentGate detects state drift and prevents stale execution.
+- Act 1: AgentGate handles a flaky Vercel deployment read.
+- Act 2: AgentGate creates a Linear issue through the same call interface.
+- Act 3: AgentGate pauses a Slack post, approves it, and executes after state revalidation.
+- Act 4: AgentGate detects Vercel state drift and prevents stale Slack execution.
 
 ## Why This Exists
 
