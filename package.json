@@ -16,8 +16,8 @@
     }
   },
   "bin": {
-    "gate": "./dist/index.js",
-    "agentgate": "./dist/index.js"
+    "gate": "dist/index.js",
+    "agentgate": "dist/index.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
