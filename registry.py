@@ -97,8 +97,8 @@ TOOL_REGISTRY: Dict[str, Dict[str, Any]] = {
     "slack.post_message": {
         "name": "Slack Post Message",
         "capability": "message.send",
-        "mcp_url": "",
-        "tool_name": "post_message",
+        "mcp_url": os.getenv("DEMO_SLACK_MCP_URL", "http://mock-saas-mcp:9002/mcp"),
+        "tool_name": "slack_post_message",
         "description": "Send a message to a Slack channel.",
         "auth_note": "Requires Slack token",
         "risk_level": "medium",
@@ -148,12 +148,12 @@ TOOL_REGISTRY: Dict[str, Dict[str, Any]] = {
     "linear.create_issue": {
         "name": "Linear Create Issue",
         "capability": "issue.create",
-        "mcp_url": "",
-        "tool_name": "create_issue",
+        "mcp_url": os.getenv("DEMO_LINEAR_MCP_URL", "http://mock-saas-mcp:9002/mcp"),
+        "tool_name": "linear_create_issue",
         "description": "Create an issue in Linear.",
         "auth_note": "Requires Linear API key",
         "risk_level": "medium",
-        "approval_required": True,
+        "approval_required": False,
         "tags": ["linear", "issue", "project-management", "task"],
         "input_schema": {
             "type": "object",
@@ -168,6 +168,31 @@ TOOL_REGISTRY: Dict[str, Dict[str, Any]] = {
             {
                 "description": "Create an engineering task.",
                 "params": {"team_id": "team-id", "title": "Fix login callback race"},
+            }
+        ],
+    },
+    "vercel.deployment_status": {
+        "name": "Vercel Deployment Status",
+        "capability": "deployment.status.read",
+        "mcp_url": os.getenv("DEMO_VERCEL_MCP_URL", "http://mock-saas-mcp:9002/mcp"),
+        "tool_name": "vercel_get_deployment",
+        "description": "Read the current status of a Vercel deployment.",
+        "auth_note": "Requires Vercel token",
+        "risk_level": "low",
+        "approval_required": False,
+        "tags": ["vercel", "deployment", "status", "release"],
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "project_id": {"type": "string", "description": "Vercel project ID or slug."},
+                "deployment_id": {"type": "string", "description": "Vercel deployment ID."},
+            },
+            "required": ["project_id", "deployment_id"],
+        },
+        "examples": [
+            {
+                "description": "Check a production deployment before announcement.",
+                "params": {"project_id": "web", "deployment_id": "dep_demo_123"},
             }
         ],
     },

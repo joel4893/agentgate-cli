@@ -11,6 +11,9 @@ services:
       - PORT=8000
       - DEMO_FETCH_MCP_URL=http://flaky-mcp:9000/mcp
       - DEMO_GITHUB_MCP_URL=http://mock-github-mcp:9001/mcp
+      - DEMO_LINEAR_MCP_URL=http://mock-saas-mcp:9002/mcp
+      - DEMO_VERCEL_MCP_URL=http://mock-saas-mcp:9002/mcp
+      - DEMO_SLACK_MCP_URL=http://mock-saas-mcp:9002/mcp
       - RETRY_MAX=6
     volumes:
       - ./logs:/app/logs
@@ -18,6 +21,7 @@ services:
     depends_on:
       - flaky-mcp
       - mock-github-mcp
+      - mock-saas-mcp
 
   flaky-mcp:
     build: .
@@ -38,4 +42,15 @@ services:
       - "9001:9001"
     environment:
       - MOCK_GITHUB_MCP_PORT=9001
+      - HOST=0.0.0.0
+
+  mock-saas-mcp:
+    build: .
+    container_name: mock-saas-mcp
+    command: python demo/mock_saas_mcp.py
+    ports:
+      - "9002:9002"
+    environment:
+      - MOCK_SAAS_MCP_PORT=9002
+      - MOCK_VERCEL_FAIL_FIRST_N=1
       - HOST=0.0.0.0
