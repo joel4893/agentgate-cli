@@ -2,13 +2,17 @@ const fs = require('fs-extra');
 const path = require('path');
 const axios = require('axios');
 
-require('dotenv').config({ path: path.resolve(__dirname, '.env') }); // Load .env file
+// Load .env from the project root where the CLI is being executed
+require('dotenv').config({ path: path.resolve(process.cwd(), '.env') });
 
+// Load package info once at startup
+const pkg = require(path.resolve(__dirname, 'package.json'));
 
 const trace = {
     call: async (action, params) => {
         // Get context from the local wrap
         const contextPath = path.join(process.cwd(), '.agentgate', 'context.json');
+
         if (!fs.existsSync(contextPath)) {
             throw new Error("Local context not found. Run 'agentgate wrap' first.");
         }
@@ -22,6 +26,12 @@ const trace = {
                 action,
                 repository: context.repoIdentifier,
                 parameters: params
+            }, {
+                timeout: 10000, // 10 second timeout
+                headers: {
+                    'User-Agent': `agentgate-cli-sdk/${pkg.version}`,
+                    'Content-Type': 'application/json'
+                }
             });
 
             return response.data;
@@ -31,7 +41,7 @@ const trace = {
                 throw new Error("Agentgate Backend is offline. Reliability check failed.");
             }
             throw new Error(
-                `Agentgate Error: ${error.response?.data?.error || error.message}`
+                `Agentgate [${error.response?.status || 'Network'}]: ${error.response?.data?.error || error.response?.statusText || error.message}`
             );
         }
     }

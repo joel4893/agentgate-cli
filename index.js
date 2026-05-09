@@ -4,20 +4,22 @@ const { Command } = require('commander');
 const chalk = require('chalk');
 const fs = require('fs-extra');
 const path = require('path');
+const pkg = require('./package.json');
 
 const program = new Command();
 const CONTEXT_DIR = path.join(process.cwd(), '.agentgate');
 const CONTEXT_FILE = path.join(CONTEXT_DIR, 'context.json');
 
 function parseGitHubPath(input) {
-  const urlRegex = /github\.com\/([^/]+)\/([^/.]+)/;
+  // Improved regex to handle trailing .git and slashes
+  const urlRegex = /github\.com\/([^/]+)\/([^/.]+?)(?:\.git)?(?:\/)?$/;
   const match = input.match(urlRegex);
   return match ? `${match[1]}/${match[2]}` : input;
 }
 
 program
   .name('agentgate')
-  .version('0.1.3');
+  .version(pkg.version);
 
 program
   .command('wrap')
@@ -55,13 +57,15 @@ program
       return;
     }
 
-    const context = await fs.readJson(CONTEXT_FILE);
-    console.log(chalk.blue(`[AgentGate] Uploading context for ${context.repoIdentifier}...`));
-
     try {
+      const context = await fs.readJson(CONTEXT_FILE);
+      console.log(chalk.blue(`[AgentGate] Uploading context for ${chalk.bold(context.repoIdentifier)}...`));
+      
       context.status = 'active';
+      context.lastUploaded = new Date().toISOString();
+      
       await fs.writeJson(CONTEXT_FILE, context, { spaces: 2 });
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise(r => setTimeout(r, 500)); // Simulating network latency
       console.log(chalk.green('✔ Upload successful.'));
     } catch (err) {
       console.error(chalk.red('Upload failed:'), err.message);
