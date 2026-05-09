@@ -1,0 +1,18 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+.envagentgate-cli-npm acces token.yaml
+agentgate-cli-npm acces token.yaml
+agentgate-cli-npm acces token.yaml
+agentgate-cli-npm acces token.yaml

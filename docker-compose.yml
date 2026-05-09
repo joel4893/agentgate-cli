@@ -1,4 +1,5 @@
 version: '3.8'
+<<<<<<< HEAD
 
 services:
   agentgate:
@@ -39,3 +40,19 @@ services:
     environment:
       - MOCK_GITHUB_MCP_PORT=9001
       - HOST=0.0.0.0
+=======
+services:
+  agentgate-backend:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    volumes:
+      - ./agentgate.audit.log:/app/agentgate.audit.log
+    restart: always
+
+# Usage:
+# 1. Create a .env file with GITHUB_TOKEN
+# 2. Run: docker-compose up -d
+>>>>>>> 1ca9941c5951e8f0a278d1e2a6adcad37454c80c
