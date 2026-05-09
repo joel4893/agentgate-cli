@@ -17,7 +17,7 @@ function parseGitHubPath(input) {
 
 program
   .name('agentgate')
-  .version('0.1.2');
+  .version('0.1.3');
 
 program
   .command('wrap')
