@@ -19,5 +19,12 @@
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/agentgate-cli.git"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
