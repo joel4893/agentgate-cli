@@ -1,6 +1,6 @@
 {
-  "name": "@joel2008/agentgate-cli",
-  "version": "0.1.6",
+  "name": "@joelq6x/agentgate-cli",
+  "version": "0.1.7",
   "description": "Agentgate CLI and SDK",
   "main": "trace.js",
   "bin": {
